@@ -1,3 +1,4 @@
+import os
 
 #use the same secret key as globallometree
 def get_secret_key():
@@ -6,7 +7,11 @@ def get_secret_key():
     return secret_key
 
 DEBUG=True
-STATIC_ROOT = '/opt/askbot/data/static'
+MEDIA_ROOT = '/opt/data/askbot/media'
+STATIC_ROOT = '/opt/data/askbot/static'
+STATICFILES_DIRS = (
+    ('default/media', os.path.join(STATIC_ROOT, 'media')),
+)
 SECRET_KEY = get_secret_key()
 LOGGING = {
 'version': 1,

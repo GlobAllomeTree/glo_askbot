@@ -88,11 +88,9 @@ LANGUAGE_CODE = 'en'
 
 # Absolute path to the directory that holds uploaded media
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/opt/data/asbot/media'
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'#this must be different from MEDIA_URL
 
-STATIC_ROOT = '/opt/data/asbot/media'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -263,9 +261,7 @@ CSRF_COOKIE_NAME = '_csrf'
 #https://docs.djangoproject.com/en/1.3/ref/contrib/csrf/
 #CSRF_COOKIE_DOMAIN = DOMAIN_NAME
 
-STATICFILES_DIRS = (
-    ('default/media', os.path.join(ASKBOT_ROOT, 'media')),
-)
+
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
