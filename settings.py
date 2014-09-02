@@ -5,14 +5,15 @@ import sys
 import askbot
 import site
 
-#this line is added so that we can import pre-packaged askbot dependencies
+# this line is added so that we can import pre-packaged askbot dependencies
+PROJECT_ROOT = os.path.dirname(__file__)
 ASKBOT_ROOT = os.path.abspath(os.path.dirname(askbot.__file__))
 site.addsitedir(os.path.join(ASKBOT_ROOT, 'deps'))
 
-DEBUG = True#set to True to enable debugging
-TEMPLATE_DEBUG = False#keep false when debugging jinja2 templates
+DEBUG = True # set to True to enable debugging
+TEMPLATE_DEBUG = False # keep false when debugging jinja2 templates
 INTERNAL_IPS = ('127.0.0.1',)
-ALLOWED_HOSTS = ['*',]#change this for better security on your site
+ALLOWED_HOSTS = ['*',] # change this for better security on your site
 
 ADMINS = (
     ('Your Name', 'your_email@domain.com'),
@@ -26,6 +27,16 @@ DATABASES = {
         'NAME': 'askbot',                      # Or path to database file if using sqlite3.
         'USER': 'askbot',                      # Not used with sqlite3.
         'PASSWORD': 'askbot',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'TEST_CHARSET': 'utf8',              # Setting the character set and collation to utf-8
+        'TEST_COLLATION': 'utf8_general_ci', # is necessary for MySQL tests to work properly.
+    },
+    'globallometree': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'globallometree',                      # Or path to database file if using sqlite3.
+        'USER': 'globallometree',                      # Not used with sqlite3.
+        'PASSWORD': 'globallometree',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
         'TEST_CHARSET': 'utf8',              # Setting the character set and collation to utf-8
@@ -77,12 +88,11 @@ LANGUAGE_CODE = 'en'
 
 # Absolute path to the directory that holds uploaded media
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'askbot', 'upfiles')
-MEDIA_URL = '/upfiles/'
-STATIC_URL = '/m/'#this must be different from MEDIA_URL
+MEDIA_ROOT = '/opt/data/asbot/media'
+MEDIA_URL = '/media/'
+STATIC_URL = '/static/'#this must be different from MEDIA_URL
 
-PROJECT_ROOT = os.path.dirname(__file__)
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+STATIC_ROOT = '/opt/data/asbot/media'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -187,6 +197,7 @@ INSTALLED_APPS = (
     'followit',
     'tinymce',
     'group_messaging',
+    'globallometree_custom',
     #'avatar',#experimental use git clone git://github.com/ericflo/django-avatar.git$
 )
 
@@ -201,7 +212,15 @@ LIVESETTINGS_CACHE_TIMEOUT = CACHE_TIMEOUT
 CACHE_PREFIX = 'askbot' #make this unique
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 #If you use memcache you may want to uncomment the following line to enable memcached based sessions
-#SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+#Sessions are stored in redis so they can be shared
+#with askbot
+SESSION_ENGINE = 'redis_sessions.session'
+SESSION_REDIS_HOST = 'localhost'
+SESSION_REDIS_PORT = 6379
+SESSION_REDIS_DB = 0
+SESSION_REDIS_PREFIX = 'session'
+SESSION_COOKIE_NAME = 'globsessionid'
+
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -325,7 +344,7 @@ SOUTH_TESTS_MIGRATE = False
 VERIFIER_EXPIRE_DAYS = 3
 
 
-if not os.path.isfile(os.path.join(PROJECT_PATH, 'settings_local.py')):
+if not os.path.isfile(os.path.join(PROJECT_ROOT, 'settings_local.py')):
     print "settings_local.py not present - skipping"
 else:
     try:
