@@ -34,11 +34,11 @@ class Command(BaseCommand):
         for glo_user in user_list:    
             try:
                 user = models.User.objects.get(id=glo_user['id'])
-                new_user = False
+                is_new_user = False
             except models.User.DoesNotExist:
                 user = models.User.objects.create()
                 user.id = glo_user['id']
-                new_user = True
+                is_new_user = True
 
             user.date_joined = glo_user['date_joined']
             user.email = glo_user['email']
@@ -50,7 +50,8 @@ class Command(BaseCommand):
             user.last_name = glo_user['last_name']
             user.password = glo_user['password']
             user.username = glo_user['username']
-            user.save()
+
+            user.save(force_insert=is_new_user)
 
             # if new_user:
             #     subscription = {'subscribe': 'y'}
