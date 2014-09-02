@@ -1,1 +1,2 @@
 django-redis-sessions==0.4.0
+psycopg2==2.5.2 
