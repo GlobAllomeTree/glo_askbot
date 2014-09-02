@@ -6,7 +6,7 @@ def get_secret_key():
     return secret_key
 
 DEBUG=True
-
+STATIC_ROOT = '/opt/askbot/data/static'
 SECRET_KEY = get_secret_key()
 LOGGING = {
 'version': 1,
