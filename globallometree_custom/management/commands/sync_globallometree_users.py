@@ -53,10 +53,10 @@ class Command(BaseCommand):
 
             user.save(force_insert=is_new_user)
 
-            # if new_user:
-            #     subscription = {'subscribe': 'y'}
-            #     email_feeds_form = forms.SimpleEmailSubscribeForm(subscription)
-            #     if email_feeds_form.is_valid():
-            #         email_feeds_form.save(user)
-            #     else:
-            #         raise CommandError('\n'.join(email_feeds_form.errors))
+            if new_user:
+                subscription = {'subscribe': 'n'}
+                email_feeds_form = forms.SimpleEmailSubscribeForm(subscription)
+                if email_feeds_form.is_valid():
+                    email_feeds_form.save(user)
+                else:
+                    raise CommandError('\n'.join(email_feeds_form.errors))
