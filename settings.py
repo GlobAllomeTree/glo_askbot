@@ -91,6 +91,9 @@ LANGUAGE_CODE = 'en'
 MEDIA_URL = '/forum/media/'
 STATIC_URL = '/forum/static/'#this must be different from MEDIA_URL
 
+STATICFILES_DIRS = (
+    ('default/media', os.path.join(ASKBOT_ROOT, 'media')),
+)
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
