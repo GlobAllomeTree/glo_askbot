@@ -88,8 +88,8 @@ LANGUAGE_CODE = 'en'
 
 # Absolute path to the directory that holds uploaded media
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_URL = '/media/'
-STATIC_URL = '/static/'#this must be different from MEDIA_URL
+MEDIA_URL = '/forum/media/'
+STATIC_URL = '/forum/static/'#this must be different from MEDIA_URL
 
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
