@@ -37,6 +37,7 @@ class Command(BaseCommand):
                 new_user = False
             except models.User.DoesNotExist:
                 user = models.User.objects.create()
+                user.id = glo_user['id']
                 new_user = True
 
             user.date_joined = glo_user['date_joined']
