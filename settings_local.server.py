@@ -9,6 +9,8 @@ def get_secret_key():
 DEBUG=True
 MEDIA_ROOT = '/opt/data/askbot/media'
 STATIC_ROOT = '/opt/data/askbot/static'
+TINYMCE_JS_ROOT = os.path.join(STATIC_ROOT, 'default/media/js/tinymce/')
+
 STATICFILES_DIRS = (
     ('default/media', os.path.join(STATIC_ROOT, 'media')),
 )
