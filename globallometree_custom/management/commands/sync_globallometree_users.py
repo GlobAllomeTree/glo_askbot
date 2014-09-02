@@ -59,8 +59,3 @@ class Command(BaseCommand):
             #         email_feeds_form.save(user)
             #     else:
             #         raise CommandError('\n'.join(email_feeds_form.errors))
-
-            from django.db import connection
-            print len(connection.queries)
-            pprint(connection.queries[97])
-            exit(1)
