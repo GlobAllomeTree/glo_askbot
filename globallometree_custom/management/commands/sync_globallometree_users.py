@@ -36,7 +36,7 @@ class Command(BaseCommand):
                 user = models.User.objects.get(id=glo_user['id'])
                 is_new_user = False
             except models.User.DoesNotExist:
-                user = models.User.objects.create()
+                user = models.User()
                 user.id = glo_user['id']
                 is_new_user = True
 
