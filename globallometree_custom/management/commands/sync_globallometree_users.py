@@ -53,7 +53,7 @@ class Command(BaseCommand):
 
             user.save(force_insert=is_new_user)
 
-            if new_user:
+            if is_new_user:
                 subscription = {'subscribe': 'n'}
                 email_feeds_form = forms.SimpleEmailSubscribeForm(subscription)
                 if email_feeds_form.is_valid():
