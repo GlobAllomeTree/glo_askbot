@@ -215,12 +215,12 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 #If you use memcache you may want to uncomment the following line to enable memcached based sessions
 #Sessions are stored in redis so they can be shared
 #with askbot
-SESSION_ENGINE = 'redis_sessions.session'
-SESSION_REDIS_HOST = 'localhost'
-SESSION_REDIS_PORT = 6379
-SESSION_REDIS_DB = 0
-SESSION_REDIS_PREFIX = 'session'
-SESSION_COOKIE_NAME = 'globsessionid'
+#SESSION_ENGINE = 'redis_sessions.session'
+#SESSION_REDIS_HOST = 'localhost'
+#SESSION_REDIS_PORT = 6379
+#SESSION_REDIS_DB = 0
+#SESSION_REDIS_PREFIX = 'session'
+#SESSION_COOKIE_NAME = 'globsessionid'
 
 
 AUTHENTICATION_BACKENDS = (
