@@ -37,7 +37,7 @@ class Command(BaseCommand):
                 is_new_user = False
             except models.User.DoesNotExist:
                 user = models.User()
-                user.id = user_to_update['id']
+                user.id = user_to_update['user_id']
                 is_new_user = True
 
             cursor.execute("SELECT * FROM auth_user WHERE id=%d;", user_to_update['user_id'])
