@@ -40,7 +40,7 @@ class Command(BaseCommand):
                 user.id = user_to_update['user_id']
                 is_new_user = True
 
-            cursor.execute("SELECT * FROM auth_user WHERE id=%d;", (user_to_update['user_id'],))
+            cursor.execute("SELECT * FROM auth_user WHERE id=%s;", (user_to_update['user_id'],))
             glo_user = dictfetchall(cursor)[0]
 
             user.date_joined = glo_user['date_joined']
