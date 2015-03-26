@@ -65,3 +65,5 @@ class Command(BaseCommand):
                     email_feeds_form.save(user)
                 else:
                     raise CommandError('\n'.join(email_feeds_form.errors))
+
+            cursor.execute("DELETE FROM accounts_userchanged WHERE id=%d;", user_to_update['user_id'])
