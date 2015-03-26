@@ -20,25 +20,28 @@ def dictfetchall(cursor):
 class Command(BaseCommand):
     
     help = """
-        syncs one or all of the globallometree users, as needed
+        syncs globallometree users as listed in the accounts_userchanged table in the 
+        globallometree database
     """
-
 
     def handle(self, *args, **options):
         
         cursor = connections['globallometree'].cursor()
-        cursor.execute("SELECT * FROM auth_user")
+        cursor.execute("SELECT DISTINCT(user_id) FROM accounts_userchanged;")
         user_list = dictfetchall(cursor)
         print "Number of users to be synced: %s" % len(user_list)
 
-        for glo_user in user_list:    
+        for user_to_update in user_list:    
             try:
-                user = models.User.objects.get(id=glo_user['id'])
+                user = models.User.objects.get(id=user_to_update['user_id'])
                 is_new_user = False
             except models.User.DoesNotExist:
                 user = models.User()
-                user.id = glo_user['id']
+                user.id = user_to_update['id']
                 is_new_user = True
+
+            cursor.execute("SELECT * FROM auth_user WHERE id=%d;", user_to_update['user_id'])
+            glo_user = dictfetchall(cursor)[0]
 
             user.date_joined = glo_user['date_joined']
             user.email = glo_user['email']
@@ -52,6 +55,8 @@ class Command(BaseCommand):
             user.username = glo_user['username']
 
             user.save(force_insert=is_new_user)
+
+            print "Synced user %s" user.username
 
             if is_new_user:
                 subscription = {'subscribe': 'n'}
