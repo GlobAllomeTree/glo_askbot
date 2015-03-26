@@ -56,7 +56,7 @@ class Command(BaseCommand):
 
             user.save(force_insert=is_new_user)
 
-            print "Synced user %s" user.username
+            print "Synced user %s" % user.username
 
             if is_new_user:
                 subscription = {'subscribe': 'n'}
