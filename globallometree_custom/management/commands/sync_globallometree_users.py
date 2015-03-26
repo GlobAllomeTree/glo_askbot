@@ -66,4 +66,4 @@ class Command(BaseCommand):
                 else:
                     raise CommandError('\n'.join(email_feeds_form.errors))
 
-            cursor.execute("DELETE FROM accounts_userchanged WHERE user_id=%d;", user_to_update['user_id'])
+            cursor.execute("DELETE FROM accounts_userchanged WHERE user_id=%s;", (user_to_update['user_id'],))
