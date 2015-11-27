@@ -100,9 +100,6 @@ STATICFILES_DIRS = (
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
-# Make up some unique string, and don't share it with anybody.
-SECRET_KEY = 'KEEP_SECRET'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'askbot.skins.loaders.Loader',
@@ -228,14 +225,6 @@ AUTHENTICATION_BACKENDS = (
     'askbot.deps.django_authopenid.backends.AuthBackend',
 )
 
-#logging settings
-LOG_FILENAME = 'askbot.log'
-logging.basicConfig(
-    filename=os.path.join(os.path.dirname(__file__), 'log', LOG_FILENAME),
-    level=logging.CRITICAL,
-    format='%(pathname)s TIME: %(asctime)s MSG: %(filename)s:%(funcName)s:%(lineno)d %(message)s',
-)
-
 ###########################
 #
 #   this will allow running your forum with url like http://site.com/forum
@@ -350,4 +339,3 @@ else:
     except ImportError:
         print "import error in the settings_local.py file."
         raise
-        
