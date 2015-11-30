@@ -40,23 +40,35 @@ class Command(BaseCommand):
                 user.id = user_to_update['user_id']
                 is_new_user = True
 
+
             cursor.execute("SELECT * FROM auth_user WHERE id=%s;", (user_to_update['user_id'],))
-            glo_user = dictfetchall(cursor)[0]
+            
+            glo_users = dictfetchall(cursor)
 
-            user.date_joined = glo_user['date_joined']
-            user.email = glo_user['email']
-            user.first_name = glo_user['first_name']
-            user.is_active = glo_user['is_active']
-            user.is_staff = glo_user['is_staff']
-            user.is_superuser = glo_user['is_superuser']
-            user.last_login = glo_user['last_login']
-            user.last_name = glo_user['last_name']
-            user.password = glo_user['password']
-            user.username = glo_user['username']
+            if len(glo_users) == 0:
+                #deleted user
+                if not is_new_user:
+                    user.is_active = False
+                    user.save()
+                    print "Deactivates user %s (was deleted in globallometree database)" % user.username
+            else:
+                #changed user
+                glo_user = glo_users[0]
 
-            user.save(force_insert=is_new_user)
+                if not is_new_user || glo_user['is_active']:
+                    user.date_joined = glo_user['date_joined']
+                    user.email = glo_user['email']
+                    user.first_name = glo_user['first_name']
+                    user.is_active = glo_user['is_active']
+                    user.is_staff = glo_user['is_staff']
+                    user.is_superuser = glo_user['is_superuser']
+                    user.last_name = glo_user['last_name']
+                    user.password = glo_user['password']
+                    user.username = glo_user['username']
 
-            print "Synced user %s" % user.username
+                    user.save(force_insert=is_new_user)
+
+                    print "Synced user %s" % user.username
 
             if is_new_user:
                 subscription = {'subscribe': 'n'}

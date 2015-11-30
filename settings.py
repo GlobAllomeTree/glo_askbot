@@ -10,13 +10,13 @@ PROJECT_ROOT = os.path.dirname(__file__)
 ASKBOT_ROOT = os.path.abspath(os.path.dirname(askbot.__file__))
 site.addsitedir(os.path.join(ASKBOT_ROOT, 'deps'))
 
-DEBUG = True # set to True to enable debugging
+DEBUG = False # set to True to enable debugging
 TEMPLATE_DEBUG = False # keep false when debugging jinja2 templates
 INTERNAL_IPS = ('127.0.0.1',)
 ALLOWED_HOSTS = ['*',] # change this for better security on your site
 
 ADMINS = (
-    ('Your Name', 'your_email@domain.com'),
+    ('', ''),
 )
 
 MANAGERS = ADMINS
