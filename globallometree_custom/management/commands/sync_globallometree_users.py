@@ -7,7 +7,7 @@ from pprint import pprint
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from askbot import models, forms
-from django.db import connections,transaction
+from django.db import connections, transaction, IntegrityError
 
 def dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"
@@ -32,52 +32,57 @@ class Command(BaseCommand):
         print "Number of users to be synced: %s" % len(user_list)
 
         for user_to_update in user_list:    
+            with transaction.atomic():
+                try:
+                    try:
+                        user = models.User.objects.get(id=user_to_update['user_id'])
+                        is_new_user = False
+                    except models.User.DoesNotExist:
+                        user = models.User()
+                        user.id = user_to_update['user_id']
+                        is_new_user = True
 
-            try:
-                user = models.User.objects.get(id=user_to_update['user_id'])
-                is_new_user = False
-            except models.User.DoesNotExist:
-                user = models.User()
-                user.id = user_to_update['user_id']
-                is_new_user = True
 
+                    cursor.execute("SELECT * FROM auth_user WHERE id=%s;", (user_to_update['user_id'],))
+                    
+                    glo_users = dictfetchall(cursor)
 
-            cursor.execute("SELECT * FROM auth_user WHERE id=%s;", (user_to_update['user_id'],))
-            
-            glo_users = dictfetchall(cursor)
+                    if len(glo_users) == 0:
+                        #deleted user
+                        if not is_new_user:
+                            user.is_active = False
+                            user.save()
+                            print "Deactivated user %s (was deleted in globallometree database)" % user.username
+                    else:
+                        #changed user
+                        glo_user = glo_users[0]
 
-            if len(glo_users) == 0:
-                #deleted user
-                if not is_new_user:
-                    user.is_active = False
-                    user.save()
-                    print "Deactivates user %s (was deleted in globallometree database)" % user.username
-            else:
-                #changed user
-                glo_user = glo_users[0]
+                        if not is_new_user or glo_user['is_active']:
+                            user.date_joined = glo_user['date_joined']
+                            user.email = glo_user['email']
+                            user.first_name = glo_user['first_name']
+                            user.is_active = glo_user['is_active']
+                            user.is_staff = glo_user['is_staff']
+                            user.is_superuser = glo_user['is_superuser']
+                            user.last_name = glo_user['last_name']
+                            user.password = glo_user['password']
+                            user.username = glo_user['username']
 
-                if not is_new_user or glo_user['is_active']:
-                    user.date_joined = glo_user['date_joined']
-                    user.email = glo_user['email']
-                    user.first_name = glo_user['first_name']
-                    user.is_active = glo_user['is_active']
-                    user.is_staff = glo_user['is_staff']
-                    user.is_superuser = glo_user['is_superuser']
-                    user.last_name = glo_user['last_name']
-                    user.password = glo_user['password']
-                    user.username = glo_user['username']
+                            user.save(force_insert=is_new_user)
 
-                    user.save(force_insert=is_new_user)
+                            print "Synced user %s" % user.username
 
-                    print "Synced user %s" % user.username
+                    if is_new_user:
+                        subscription = {'subscribe': 'n'}
+                        email_feeds_form = forms.SimpleEmailSubscribeForm(subscription)
+                        if email_feeds_form.is_valid():
+                            email_feeds_form.save(user)
+                        else:
+                            raise CommandError('\n'.join(email_feeds_form.errors))
 
-            if is_new_user:
-                subscription = {'subscribe': 'n'}
-                email_feeds_form = forms.SimpleEmailSubscribeForm(subscription)
-                if email_feeds_form.is_valid():
-                    email_feeds_form.save(user)
-                else:
-                    raise CommandError('\n'.join(email_feeds_form.errors))
+                cursor.execute("DELETE FROM accounts_userchanged WHERE user_id=%s;", (user_to_update['user_id'],))
+            except IntegrityError as e:
+                print "Failed to sync user %s " %  user_to_update['user_id']
+                print "Exception was %s" % e
 
-            cursor.execute("DELETE FROM accounts_userchanged WHERE user_id=%s;", (user_to_update['user_id'],))
 
