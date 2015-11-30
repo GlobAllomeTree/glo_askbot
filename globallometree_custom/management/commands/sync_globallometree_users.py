@@ -7,7 +7,7 @@ from pprint import pprint
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from askbot import models, forms
-from django.db import connections
+from django.db import connections,transaction
 
 def dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"
@@ -32,6 +32,9 @@ class Command(BaseCommand):
         print "Number of users to be synced: %s" % len(user_list)
 
         for user_to_update in user_list:    
+
+            sid = transaction.savepoint()
+
             try:
                 user = models.User.objects.get(id=user_to_update['user_id'])
                 is_new_user = False
@@ -79,3 +82,5 @@ class Command(BaseCommand):
                     raise CommandError('\n'.join(email_feeds_form.errors))
 
             cursor.execute("DELETE FROM accounts_userchanged WHERE user_id=%s;", (user_to_update['user_id'],))
+
+            transaction.savepoint_commit(sid)
