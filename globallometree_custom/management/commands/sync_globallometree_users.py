@@ -33,8 +33,6 @@ class Command(BaseCommand):
 
         for user_to_update in user_list:    
 
-            sid = transaction.savepoint()
-
             try:
                 user = models.User.objects.get(id=user_to_update['user_id'])
                 is_new_user = False
@@ -83,4 +81,3 @@ class Command(BaseCommand):
 
             cursor.execute("DELETE FROM accounts_userchanged WHERE user_id=%s;", (user_to_update['user_id'],))
 
-            transaction.savepoint_commit(sid)
