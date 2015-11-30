@@ -55,7 +55,7 @@ class Command(BaseCommand):
                 #changed user
                 glo_user = glo_users[0]
 
-                if not is_new_user || glo_user['is_active']:
+                if not is_new_user or glo_user['is_active']:
                     user.date_joined = glo_user['date_joined']
                     user.email = glo_user['email']
                     user.first_name = glo_user['first_name']
