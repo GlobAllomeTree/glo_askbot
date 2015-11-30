@@ -1,3 +1,6 @@
 django-redis-sessions==0.4.0
-psycopg2==2.5.2 
+psycopg2==2.5.2
 gunicorn==18.0
+python-daemon==1.6.1
+askbot==0.7.50
+eventlet==0.17.4
