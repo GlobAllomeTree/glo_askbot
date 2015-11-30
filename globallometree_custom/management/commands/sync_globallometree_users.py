@@ -80,9 +80,9 @@ class Command(BaseCommand):
                         else:
                             raise CommandError('\n'.join(email_feeds_form.errors))
 
-                cursor.execute("DELETE FROM accounts_userchanged WHERE user_id=%s;", (user_to_update['user_id'],))
-            except IntegrityError as e:
-                print "Failed to sync user %s " %  user_to_update['user_id']
-                print "Exception was %s" % e
+                    cursor.execute("DELETE FROM accounts_userchanged WHERE user_id=%s;", (user_to_update['user_id'],))
+                except IntegrityError as e:
+                    print "Failed to sync user %s " %  user_to_update['user_id']
+                    print "Exception was %s" % e
 
 
