@@ -71,15 +71,17 @@ class Command(BaseCommand):
 
                         print "Synced user %s" % user.username
 
-                if is_new_user:
-                    subscription = {'subscribe': 'n'}
-                    email_feeds_form = forms.SimpleEmailSubscribeForm(subscription)
-                    if email_feeds_form.is_valid():
-                        email_feeds_form.save(user)
-                    else:
-                        raise CommandError('\n'.join(email_feeds_form.errors))
+                        if is_new_user:
+                            subscription = {'subscribe': 'n'}
+                            email_feeds_form = forms.SimpleEmailSubscribeForm(subscription)
+                            if email_feeds_form.is_valid():
+                                email_feeds_form.save(user)
+                            else:
+                                raise CommandError('\n'.join(email_feeds_form.errors))
 
                 cursor.execute("DELETE FROM accounts_userchanged WHERE user_id=%s;", (user_to_update['user_id'],))
+                print "Removed user from user %s changed list" % user_to_update['user_id']
+                
             except IntegrityError as e:
                 print "Failed to sync user %s " %  user_to_update['user_id']
                 print "Exception was %s" % e
